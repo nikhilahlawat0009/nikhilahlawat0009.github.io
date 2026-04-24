@@ -2,204 +2,973 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Nikhil Ahlawat | ML Engineer</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" type="image/png" href="favicon.png">
-
+  <title>Nikhil Ahlawat — Production AI Systems Engineer</title>
   <style>
-    body {
+    * {
       margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      background: #0a0f1c;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+        sans-serif;
+      background: linear-gradient(135deg, #0a0e27, #1a1f3a);
       color: #e5e7eb;
+      line-height: 1.6;
+      min-height: 100vh;
     }
 
-    header {
-      text-align: center;
-      padding: 100px 20px;
+    /* Navigation */
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: rgba(10, 14, 39, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 0 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 70px;
+      z-index: 1000;
+      border-bottom: 1px solid rgba(96, 165, 250, 0.1);
     }
 
-    h1 { font-size: 3em; }
-
-    .tagline {
-      color: #9ca3af;
-      margin-top: 10px;
-    }
-
-    .cta a {
-      margin: 10px;
-      padding: 10px 18px;
-      border: 1px solid #38bdf8;
-      border-radius: 6px;
-      color: #38bdf8;
+    .nav-brand {
+      font-size: 20px;
+      font-weight: bold;
+      background: linear-gradient(135deg, #60a5fa, #3b82f6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
       text-decoration: none;
     }
 
-    .cta a:hover {
-      background: #38bdf8;
-      color: #0a0f1c;
+    .nav-links {
+      display: flex;
+      gap: 40px;
+      list-style: none;
     }
 
-    section {
-      max-width: 1000px;
-      margin: auto;
-      padding: 60px 20px;
+    .nav-links a {
+      color: #d1d5db;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.3s ease;
+      position: relative;
     }
 
-    h2 {
-      border-bottom: 1px solid #1f2937;
-      padding-bottom: 10px;
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: #60a5fa;
+      transition: width 0.3s ease;
     }
 
-    .card {
-      background: #111827;
-      padding: 25px;
-      margin-top: 20px;
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: #60a5fa;
+    }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      cursor: pointer;
+      gap: 5px;
+    }
+
+    .hamburger span {
+      width: 25px;
+      height: 3px;
+      background: #60a5fa;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+
+    /* Hero Section */
+    #hero {
+      padding: 180px 40px 100px;
+      text-align: center;
+      margin-top: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #hero h1 {
+      font-size: 72px;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, #60a5fa, #3b82f6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.2;
+      animation: fadeInDown 0.8s ease;
+      font-weight: 800;
+    }
+
+    #hero .subtitle {
+      font-size: 26px;
+      color: #9ca3af;
+      margin-bottom: 30px;
+      animation: fadeInUp 0.8s ease 0.2s both;
+      font-weight: 300;
+    }
+
+    #hero .about-intro {
+      max-width: 750px;
+      margin: 30px auto;
+      font-size: 17px;
+      color: #d1d5db;
+      line-height: 1.8;
+      animation: fadeInUp 0.8s ease 0.4s both;
+    }
+
+    .cta-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-top: 50px;
+      animation: fadeInUp 0.8s ease 0.6s both;
+    }
+
+    .cta-btn {
+      padding: 16px 40px;
       border-radius: 10px;
-      transition: 0.3s;
-    }
-
-    .card:hover {
-      transform: translateY(-6px);
-    }
-
-    .skills span {
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 15px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      border: none;
       display: inline-block;
-      background: #1f2937;
-      margin: 5px;
-      padding: 8px 14px;
-      border-radius: 20px;
     }
 
-    a { color: #38bdf8; text-decoration: none; }
+    .cta-btn-primary {
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      color: white;
+      box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+    }
 
+    .cta-btn-primary:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 15px 40px rgba(59, 130, 246, 0.4);
+    }
+
+    .cta-btn-secondary {
+      background: transparent;
+      border: 2px solid #3b82f6;
+      color: #60a5fa;
+    }
+
+    .cta-btn-secondary:hover {
+      background: rgba(59, 130, 246, 0.1);
+      transform: translateY(-4px);
+    }
+
+    /* Sections */
+    section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 120px 40px;
+    }
+
+    .section-title {
+      font-size: 48px;
+      margin-bottom: 60px;
+      color: #f3f4f6;
+      border-bottom: 3px solid #3b82f6;
+      padding-bottom: 20px;
+      display: inline-block;
+      font-weight: 800;
+    }
+
+    /* Projects Grid */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 35px;
+      margin-top: 60px;
+    }
+
+    .project-card {
+      background: rgba(30, 41, 59, 0.5);
+      border: 1px solid rgba(148, 163, 184, 0.15);
+      padding: 35px;
+      border-radius: 14px;
+      transition: all 0.3s ease;
+      overflow: hidden;
+      position: relative;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .project-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: rgba(96, 165, 250, 0.08);
+      transition: left 0.3s ease;
+      z-index: 0;
+    }
+
+    .project-card:hover::before {
+      left: 0;
+    }
+
+    .project-card > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .project-card:hover {
+      transform: translateY(-12px);
+      border-color: rgba(96, 165, 250, 0.4);
+      box-shadow: 0 20px 40px rgba(96, 165, 250, 0.15);
+    }
+
+    .project-card h3 {
+      font-size: 22px;
+      margin-bottom: 10px;
+      color: #60a5fa;
+      font-weight: 700;
+    }
+
+    .project-meta {
+      font-size: 12px;
+      color: #9ca3af;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+    }
+
+    .project-card p {
+      color: #d1d5db;
+      margin-bottom: 20px;
+      font-size: 15px;
+      line-height: 1.7;
+      flex-grow: 1;
+    }
+
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 20px 0;
+    }
+
+    .tag {
+      background: rgba(59, 130, 246, 0.12);
+      border: 1px solid rgba(96, 165, 250, 0.3);
+      color: #60a5fa;
+      padding: 5px 12px;
+      border-radius: 16px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .project-link {
+      color: #60a5fa;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      transition: color 0.3s ease;
+      display: inline-block;
+      margin-top: auto;
+    }
+
+    .project-link:hover {
+      color: #93c5fd;
+      text-decoration: underline;
+    }
+
+    /* Featured Project */
+    .featured-section {
+      background: linear-gradient(135deg, rgba(30, 144, 255, 0.12), rgba(59, 130, 246, 0.08));
+      border: 2px solid rgba(96, 165, 250, 0.3);
+      padding: 60px;
+      border-radius: 16px;
+      margin-bottom: 70px;
+    }
+
+    .featured-section h3 {
+      font-size: 32px;
+      color: #60a5fa;
+      margin-bottom: 20px;
+      font-weight: 700;
+    }
+
+    .featured-section p {
+      color: #d1d5db;
+      margin-bottom: 25px;
+      font-size: 16px;
+      line-height: 1.8;
+    }
+
+    .featured-section ul {
+      margin-left: 20px;
+      margin-bottom: 25px;
+    }
+
+    .featured-section li {
+      color: #d1d5db;
+      margin-bottom: 12px;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 25px;
+      margin: 40px 0;
+    }
+
+    .metric {
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid rgba(96, 165, 250, 0.3);
+      padding: 30px 25px;
+      border-radius: 12px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .metric:hover {
+      background: rgba(59, 130, 246, 0.18);
+      transform: translateY(-8px);
+      border-color: rgba(96, 165, 250, 0.5);
+    }
+
+    .metric-value {
+      font-size: 36px;
+      font-weight: bold;
+      color: #60a5fa;
+      margin-bottom: 10px;
+    }
+
+    .metric-label {
+      font-size: 12px;
+      color: #9ca3af;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      font-weight: 600;
+    }
+
+    /* Research Section */
+    .research-item {
+      background: rgba(30, 41, 59, 0.5);
+      border: 1px solid rgba(148, 163, 184, 0.15);
+      padding: 35px;
+      border-radius: 14px;
+      margin-bottom: 30px;
+      border-left: 4px solid #3b82f6;
+      transition: all 0.3s ease;
+    }
+
+    .research-item:hover {
+      transform: translateX(8px);
+      border-left-color: #60a5fa;
+      background: rgba(30, 41, 59, 0.7);
+    }
+
+    .research-item h4 {
+      font-size: 20px;
+      color: #60a5fa;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .research-publication {
+      font-size: 13px;
+      color: #9ca3af;
+      margin-bottom: 15px;
+      font-style: italic;
+      font-weight: 500;
+    }
+
+    .research-item p {
+      color: #d1d5db;
+      margin-bottom: 18px;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .research-item a {
+      color: #60a5fa;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+
+    .research-item a:hover {
+      color: #93c5fd;
+      text-decoration: underline;
+    }
+
+    /* Experience Section */
+    .experience-item {
+      background: rgba(30, 41, 59, 0.5);
+      border: 1px solid rgba(148, 163, 184, 0.15);
+      padding: 35px;
+      border-radius: 14px;
+      margin-bottom: 30px;
+      border-left: 4px solid #3b82f6;
+      transition: all 0.3s ease;
+    }
+
+    .experience-item:hover {
+      transform: translateX(8px);
+      border-left-color: #60a5fa;
+    }
+
+    .experience-item h4 {
+      font-size: 20px;
+      color: #60a5fa;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .experience-meta {
+      font-size: 13px;
+      color: #9ca3af;
+      margin-bottom: 16px;
+      font-weight: 500;
+    }
+
+    .experience-item ul {
+      margin-left: 20px;
+      color: #d1d5db;
+    }
+
+    .experience-item li {
+      margin-bottom: 10px;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    /* Skills Section */
+    #skills {
+      background: rgba(30, 41, 59, 0.2);
+      border-radius: 14px;
+      padding: 80px 40px;
+    }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 20px;
+      margin-top: 50px;
+    }
+
+    .skill-item {
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid rgba(96, 165, 250, 0.3);
+      padding: 22px;
+      border-radius: 12px;
+      text-align: center;
+      color: #60a5fa;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 15px;
+    }
+
+    .skill-item:hover {
+      background: rgba(96, 165, 250, 0.2);
+      transform: translateY(-8px);
+      border-color: rgba(96, 165, 250, 0.5);
+      box-shadow: 0 15px 35px rgba(96, 165, 250, 0.2);
+    }
+
+    /* Footer */
     footer {
       text-align: center;
-      padding: 30px;
+      padding: 80px 40px;
       color: #6b7280;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      color: #60a5fa;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s ease;
+      font-size: 15px;
+    }
+
+    .footer-links a:hover {
+      color: #93c5fd;
+    }
+
+    .footer-credit {
+      font-size: 13px;
+      color: #4b5563;
+      margin-top: 30px;
+    }
+
+    /* Animations */
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+      nav {
+        padding: 0 20px;
+      }
+
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 70px;
+        left: 0;
+        width: 100%;
+        background: rgba(10, 14, 39, 0.98);
+        flex-direction: column;
+        gap: 0;
+        padding: 20px;
+        gap: 20px;
+      }
+
+      .nav-links.active {
+        display: flex;
+      }
+
+      .hamburger {
+        display: flex;
+      }
+
+      #hero {
+        padding: 140px 20px 80px;
+        min-height: auto;
+      }
+
+      #hero h1 {
+        font-size: 44px;
+      }
+
+      #hero .subtitle {
+        font-size: 20px;
+      }
+
+      .section-title {
+        font-size: 36px;
+      }
+
+      section {
+        padding: 80px 20px;
+      }
+
+      .featured-section {
+        padding: 35px 25px;
+      }
+
+      .projects-grid {
+        grid-template-columns: 1fr;
+        gap: 25px;
+      }
+
+      .metrics {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+      }
+
+      .skills-grid {
+        grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      }
+
+      .cta-buttons {
+        flex-direction: column;
+      }
+
+      .cta-btn {
+        width: 100%;
+      }
+
+      .footer-links {
+        gap: 20px;
+      }
     }
   </style>
 </head>
-
 <body>
 
-<header>
-  <h1>Nikhil Ahlawat</h1>
-  <p class="tagline">
-    Machine Learning Engineer building production-grade AI systems, MLOps pipelines, and agentic AI
-  </p>
+<!-- Navigation -->
+<nav>
+  <a href="#" class="nav-brand">Nikhil Ahlawat</a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#hero" onclick="setActive(this)">Home</a></li>
+    <li><a href="#projects" onclick="setActive(this)">Projects</a></li>
+    <li><a href="#research" onclick="setActive(this)">Research</a></li>
+    <li><a href="#experience" onclick="setActive(this)">Experience</a></li>
+    <li><a href="#skills" onclick="setActive(this)">Skills</a></li>
+  </ul>
+  <div class="hamburger" id="hamburger">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</nav>
 
-  <div class="cta">
+<!-- Hero Section -->
+<section id="hero">
+  <h1>Nikhil Ahlawat</h1>
+  <p class="subtitle">Production AI Systems Engineer</p>
+  <p class="about-intro">
+    I build production-grade retrieval systems, ML pipelines, and agentic AI workflows. 
+    Specializing in scalable architecture, real metrics, and engineering rigor. 
+    Currently at Sky, building ML systems that power recommendations at scale.
+  </p>
+  <div class="cta-buttons">
+    <a href="#projects" class="cta-btn cta-btn-primary">View My Work</a>
+    <a href="https://www.linkedin.com/in/nikhil-ahlawat8" target="_blank" class="cta-btn cta-btn-secondary">LinkedIn</a>
+  </div>
+</section>
+
+<!-- Projects Section -->
+<section id="projects">
+  <h2 class="section-title">Featured & Projects</h2>
+
+  <!-- Production-RAG Featured -->
+  <div class="featured-section">
+    <h3>Production-Grade Retrieval Platform</h3>
+    <p>
+      A hybrid search system combining BM25 keyword matching, semantic embeddings, and cross-encoder reranking. 
+      Processes 1,000+ documents incrementally with full transparency through detailed score breakdowns.
+    </p>
+    <ul>
+      <li>Hybrid search with tunable weights (BM25 0.3 + semantic 0.4 + reranking 0.3)</li>
+      <li>Incremental ingestion with hash-based deduplication</li>
+      <li>Intelligent chunking: 512 characters with 50% overlap (tested 4 sizes, defended with numbers)</li>
+      <li>Metadata filtering on source, date, and custom tags</li>
+      <li>Evaluation framework: 20 ground-truth queries, 3 configurations</li>
+      <li>Cost: $0.12 per 1,000 queries (linear scaling)</li>
+    </ul>
+
+    <div class="metrics">
+      <div class="metric">
+        <div class="metric-value">95%</div>
+        <div class="metric-label">Precision@5</div>
+      </div>
+      <div class="metric">
+        <div class="metric-value">100%</div>
+        <div class="metric-label">Recall@5</div>
+      </div>
+      <div class="metric">
+        <div class="metric-value">0.946</div>
+        <div class="metric-label">NDCG@5</div>
+      </div>
+      <div class="metric">
+        <div class="metric-value">180ms</div>
+        <div class="metric-label">P95 Latency</div>
+      </div>
+    </div>
+
+    <div class="project-tags">
+      <span class="tag">FastAPI</span>
+      <span class="tag">SentenceTransformers</span>
+      <span class="tag">ChromaDB</span>
+      <span class="tag">BM25</span>
+      <span class="tag">Cross-Encoder</span>
+      <span class="tag">Python</span>
+    </div>
+
+    <a href="https://github.com/nikhilahlawat0009/production-rag" target="_blank" class="project-link">
+      View Repository →
+    </a>
+  </div>
+
+  <!-- All Projects Grid -->
+  <div class="projects-grid">
+    <div class="project-card">
+      <h3>SmartInvest</h3>
+      <p class="project-meta">LLM + RAG Platform</p>
+      <p>
+        End-to-end financial intelligence platform combining UK stock data with LLM reasoning and retrieval. 
+        Generates stock insights in plain English and provides investment recommendations.
+      </p>
+      <div class="project-tags">
+        <span class="tag">LangChain</span>
+        <span class="tag">FastAPI</span>
+        <span class="tag">LLM</span>
+      </div>
+      <a href="https://github.com/nikhilahlawat0009/smartinvest" target="_blank" class="project-link">
+        View Project →
+      </a>
+    </div>
+
+    <div class="project-card">
+      <h3>LSE Stock Prediction</h3>
+      <p class="project-meta">ML Dashboard</p>
+      <p>
+        Interactive Streamlit dashboard predicting FTSE 100 stock prices using ensemble ML models. 
+        Features real-time data ingestion, model comparison, and performance metrics visualization.
+      </p>
+      <div class="project-tags">
+        <span class="tag">Streamlit</span>
+        <span class="tag">ML</span>
+        <span class="tag">Pandas</span>
+      </div>
+      <a href="https://github.com/nikhilahlawat0009/LSE-Stock-Prediction" target="_blank" class="project-link">
+        View Project →
+      </a>
+    </div>
+
+    <div class="project-card">
+      <h3>London Weather Pipeline</h3>
+      <p class="project-meta">Data Pipeline</p>
+      <p>
+        Production weather data pipeline fetching real-time OpenWeather data and serving through REST API. 
+        Includes data validation, error handling, and PostgreSQL persistence.
+      </p>
+      <div class="project-tags">
+        <span class="tag">Flask</span>
+        <span class="tag">APIs</span>
+        <span class="tag">PostgreSQL</span>
+      </div>
+      <a href="https://github.com/nikhilahlawat0009/London-Weather-Pipeline" target="_blank" class="project-link">
+        View Project →
+      </a>
+    </div>
+
+    <div class="project-card">
+      <h3>COVID-19 Analysis</h3>
+      <p class="project-meta">Data Visualization</p>
+      <p>
+        Comprehensive COVID-19 data analysis with interactive visualizations. 
+        Shows regional trends, mortality rates, and comparative epidemiological insights.
+      </p>
+      <div class="project-tags">
+        <span class="tag">Pandas</span>
+        <span class="tag">Matplotlib</span>
+        <span class="tag">Analysis</span>
+      </div>
+      <a href="https://github.com/nikhilahlawat0009/Covid19Analysis" target="_blank" class="project-link">
+        View Project →
+      </a>
+    </div>
+
+    <div class="project-card">
+      <h3>Customer Segmentation</h3>
+      <p class="project-meta">ML & Market Analysis</p>
+      <p>
+        Machine learning project for customer segmentation and market analysis. 
+        Applies clustering algorithms to identify patterns and optimize targeting strategies.
+      </p>
+      <div class="project-tags">
+        <span class="tag">Scikit-Learn</span>
+        <span class="tag">Clustering</span>
+        <span class="tag">Analytics</span>
+      </div>
+      <a href="https://github.com/nikhilahlawat0009/Customer-Segmentation-and-Market-Analysis" target="_blank" class="project-link">
+        View Project →
+      </a>
+    </div>
+
+    <div class="project-card">
+      <h3>To-Do List App</h3>
+      <p class="project-meta">Task Management</p>
+      <p>
+        Full-featured task management application with priority levels, completion tracking, 
+        and JSON-based persistence. Demonstrates clean architecture and user-friendly CLI design.
+      </p>
+      <div class="project-tags">
+        <span class="tag">Python</span>
+        <span class="tag">JSON</span>
+        <span class="tag">CLI</span>
+      </div>
+      <a href="https://github.com/nikhilahlawat0009/To-do-list-App" target="_blank" class="project-link">
+        View Project →
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Research Section -->
+<section id="research">
+  <h2 class="section-title">Research & Publications</h2>
+
+  <div class="research-item">
+    <h4>Lithium-Ion Battery State of Health Estimation</h4>
+    <p class="research-publication">Published in Renewable Energy & Sustainability Review</p>
+    <p>
+      Developed comprehensive ML benchmarking framework comparing XGBoost, Random Forest, and SVM 
+      for battery health prediction using NASA datasets. Demonstrated impact of hyperparameter tuning 
+      on model performance with rigorous evaluation methodology.
+    </p>
+    <a href="https://www.sciencedirect.com/science/article/pii/S2950264025000784" target="_blank">
+      Read Full Paper →
+    </a>
+  </div>
+
+  <div class="research-item">
+    <h4>Hydrogen Adoption in the UK: A Data-Driven Analysis</h4>
+    <p class="research-publication">Published in Environmental Science & Ecology Journal</p>
+    <p>
+      Analyzed UK survey data using statistical modeling and NLP techniques to understand public perception 
+      of hydrogen energy adoption. Identified key barriers and drivers for renewable energy transition 
+      through data-driven insights.
+    </p>
+    <a href="https://scijournals.onlinelibrary.wiley.com/doi/full/10.1002/ese3.70321" target="_blank">
+      Read Full Paper →
+    </a>
+  </div>
+
+  <div style="text-align: center; margin-top: 40px; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.1);">
+    <p style="color: #9ca3af; margin-bottom: 15px;">Full research profile</p>
+    <a href="https://scholar.google.co.uk/citations?hl=en&user=J2PM-PsAAAAJ" target="_blank" class="project-link" style="font-size: 16px;">
+      View Google Scholar →
+    </a>
+  </div>
+</section>
+
+<!-- Experience Section -->
+<section id="experience">
+  <h2 class="section-title">Experience</h2>
+
+  <div class="experience-item">
+    <h4>Machine Learning Engineer</h4>
+    <p class="experience-meta">Sky • Currently</p>
+    <ul>
+      <li>Built production ML systems for recommendation and decisioning at scale</li>
+      <li>Designed and deployed GCP Vertex AI pipelines with automated retraining</li>
+      <li>Implemented comprehensive monitoring and drift detection for model quality</li>
+      <li>Developed agentic AI workflows for ML lifecycle automation</li>
+      <li>Technologies: Python, BigQuery, Vertex AI, Docker, LangGraph, LangChain</li>
+    </ul>
+  </div>
+</section>
+
+<!-- Skills Section -->
+<section id="skills">
+  <h2 class="section-title">Technical Skills</h2>
+  <div class="skills-grid">
+    <div class="skill-item">Python</div>
+    <div class="skill-item">Machine Learning</div>
+    <div class="skill-item">RAG Systems</div>
+    <div class="skill-item">LLMs & Agents</div>
+    <div class="skill-item">FastAPI</div>
+    <div class="skill-item">GCP Vertex AI</div>
+    <div class="skill-item">BigQuery</div>
+    <div class="skill-item">ChromaDB</div>
+    <div class="skill-item">Docker</div>
+    <div class="skill-item">Kubernetes</div>
+    <div class="skill-item">LangGraph</div>
+    <div class="skill-item">LangChain</div>
+    <div class="skill-item">SQL</div>
+    <div class="skill-item">Streamlit</div>
+    <div class="skill-item">Pandas & NumPy</div>
+    <div class="skill-item">Scikit-Learn</div>
+    <div class="skill-item">MLOps</div>
+    <div class="skill-item">Data Pipelines</div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-links">
     <a href="https://github.com/nikhilahlawat0009" target="_blank">GitHub</a>
     <a href="https://www.linkedin.com/in/nikhil-ahlawat8" target="_blank">LinkedIn</a>
     <a href="https://scholar.google.co.uk/citations?hl=en&user=J2PM-PsAAAAJ" target="_blank">Google Scholar</a>
+    <a href="mailto:nikhil.ahlawat@yahoo.com">Email</a>
   </div>
-</header>
-
-<section>
-  <h2>About</h2>
-  <p>
-    Machine Learning Engineer at Sky, specialising in scalable ML systems, MLOps, and agentic AI workflows.
-    I build end-to-end pipelines from data ingestion to deployment and monitoring in production environments.
-  </p>
-</section>
-
-<section>
-  <h2>Experience</h2>
-
-  <div class="card">
-    <h3>Machine Learning Engineer — Sky</h3>
-    <ul>
-      <li>Built production ML systems for recommendation and decisioning</li>
-      <li>Designed pipelines on GCP (Vertex AI, BigQuery)</li>
-      <li>Implemented automated retraining, monitoring, and drift detection</li>
-      <li>Developed agentic AI workflows for ML lifecycle automation</li>
-    </ul>
-  </div>
-
-</section>
-
-<section>
-  <h2>Projects</h2>
-
-  <div class="card">
-    <h3>SmartInvest — AI Financial Intelligence</h3>
-    <p>LLM + RAG powered platform for UK stock insights in plain English.</p>
-    <a href="https://github.com/nikhilahlawat0009/smartinvest">View Project →</a>
-  </div>
-
-  <div class="card">
-    <h3>LSE Stock Prediction Dashboard</h3>
-    <p>Streamlit dashboard predicting FTSE 100 stock prices using ML models.</p>
-    <a href="https://github.com/nikhilahlawat0009/LSE-Stock-Prediction">View Project →</a>
-  </div>
-
-  <div class="card">
-    <h3>London Weather Pipeline</h3>
-    <p>Real-time weather data pipeline using Flask and OpenWeather API.</p>
-    <a href="https://github.com/nikhilahlawat0009/London-Weather-Pipeline">View Project →</a>
-  </div>
-
-</section>
-
-<section>
-  <h2>Research & Publications</h2>
-
-  <div class="card">
-    <h3>Lithium-Ion Battery State of Health Estimation</h3>
-    <p>
-      Developed ML benchmarking framework comparing XGBoost, Random Forest, and SVM 
-      for battery health prediction using NASA datasets.
-    </p>
-    <a href="https://www.sciencedirect.com/science/article/pii/S2950264025000784">Read Paper →</a>
-  </div>
-
-  <div class="card">
-    <h3>Hydrogen Adoption in the UK</h3>
-    <p>
-      Analysed UK survey data using statistical modelling and NLP to understand public perception 
-      of hydrogen energy adoption.
-    </p>
-    <a href="https://scijournals.onlinelibrary.wiley.com/doi/full/10.1002/ese3.70321">Read Paper →</a>
-  </div>
-
-  <p>
-    👉 View full research profile:
-    <a href="https://scholar.google.co.uk/citations?hl=en&user=J2PM-PsAAAAJ">Google Scholar</a>
-  </p>
-
-</section>
-
-<section>
-  <h2>Skills</h2>
-  <div class="skills">
-    <span>Python</span>
-    <span>Machine Learning</span>
-    <span>MLOps</span>
-    <span>GCP</span>
-    <span>Vertex AI</span>
-    <span>BigQuery</span>
-    <span>Docker</span>
-    <span>Kubernetes</span>
-    <span>LangGraph</span>
-    <span>FastAPI</span>
-    <span>SQL</span>
-    <span>Generative AI</span>
-  </div>
-</section>
-
-<section>
-  <h2>Contact</h2>
-  <p>Email: nikhil.ahlawat@yahoo.com</p>
-  <p>
-    <a href="https://github.com/nikhilahlawat0009">GitHub</a> |
-    <a href="https://www.linkedin.com/in/nikhil-ahlawat8">LinkedIn</a>
-  </p>
-</section>
-
-<footer>
-  <p>© 2026 Nikhil Ahlawat</p>
+  <p class="footer-credit">© 2026 Nikhil Ahlawat • AI Systems Engineer</p>
 </footer>
+
+<script>
+  // Mobile menu toggle
+  const hamburger = document.getElementById('hamburger');
+  const navLinks = document.getElementById('navLinks');
+
+  hamburger.addEventListener('click', () => {
+    navLinks.classList.toggle('active');
+  });
+
+  // Close menu when clicking a link
+  document.querySelectorAll('.nav-links a').forEach(link => {
+    link.addEventListener('click', () => {
+      navLinks.classList.remove('active');
+    });
+  });
+
+  // Set active nav link
+  function setActive(element) {
+    document.querySelectorAll('.nav-links a').forEach(link => {
+      link.classList.remove('active');
+    });
+    element.classList.add('active');
+  }
+
+  // Update active link on scroll
+  window.addEventListener('scroll', () => {
+    const sections = ['hero', 'projects', 'research', 'experience', 'skills'];
+    let current = 'hero';
+
+    sections.forEach(section => {
+      const element = document.getElementById(section);
+      if (element && element.offsetTop <= window.scrollY + 200) {
+        current = section;
+      }
+    });
+
+    document.querySelectorAll('.nav-links a').forEach(link => {
+      link.classList.remove('active');
+      if (link.getAttribute('href') === `#${current}`) {
+        link.classList.add('active');
+      }
+    });
+  });
+</script>
 
 </body>
 </html>
