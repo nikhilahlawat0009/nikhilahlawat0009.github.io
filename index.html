@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Nikhil Ahlawat — Production Machine Learning Engineer</title>
-  
+
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-  
+
   <style>
     * {
       margin: 0;
@@ -27,6 +27,32 @@
       color: #e5e7eb;
       line-height: 1.6;
       min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Canvas background */
+    #canvas-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* Cursor glow */
+    .cursor-glow {
+      pointer-events: none;
+      position: fixed;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.07) 0%, transparent 65%);
+      transform: translate(-50%, -50%);
+      z-index: 1;
+      transition: left 0.08s linear, top 0.08s linear;
+      will-change: left, top;
     }
 
     /* Navigation */
@@ -34,15 +60,16 @@
       position: fixed;
       top: 0;
       width: 100%;
-      background: rgba(10, 14, 39, 0.95);
-      backdrop-filter: blur(10px);
+      background: rgba(10, 14, 39, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       padding: 0 40px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       height: 70px;
       z-index: 1000;
-      border-bottom: 1px solid rgba(96, 165, 250, 0.1);
+      border-bottom: 1px solid rgba(96, 165, 250, 0.12);
     }
 
     .nav-brand {
@@ -81,7 +108,8 @@
       transition: width 0.3s ease;
     }
 
-    .nav-links a:hover::after {
+    .nav-links a:hover::after,
+    .nav-links a.active::after {
       width: 100%;
     }
 
@@ -115,6 +143,8 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
+      position: relative;
+      z-index: 2;
     }
 
     #hero h1 {
@@ -135,6 +165,19 @@
       margin-bottom: 30px;
       animation: fadeInUp 0.8s ease 0.2s both;
       font-weight: 300;
+      min-height: 1.4em;
+    }
+
+    .typing-cursor {
+      display: inline-block;
+      color: #60a5fa;
+      animation: blink 1s step-end infinite;
+      font-weight: 300;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
     }
 
     #hero .about-intro {
@@ -175,7 +218,7 @@
 
     .cta-btn-primary:hover {
       transform: translateY(-4px);
-      box-shadow: 0 15px 40px rgba(59, 130, 246, 0.4);
+      box-shadow: 0 15px 40px rgba(59, 130, 246, 0.5);
     }
 
     .cta-btn-secondary {
@@ -194,6 +237,8 @@
       max-width: 1100px;
       margin: 0 auto;
       padding: 120px 40px;
+      position: relative;
+      z-index: 2;
     }
 
     .section-title {
@@ -206,12 +251,71 @@
       font-weight: 800;
     }
 
+    /* Scroll animation */
+    .anim {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .anim.anim-left {
+      transform: translateX(-40px);
+    }
+
+    .anim.visible {
+      opacity: 1;
+      transform: translate(0, 0);
+    }
+
+    .anim.d1 { transition-delay: 0.05s; }
+    .anim.d2 { transition-delay: 0.1s; }
+    .anim.d3 { transition-delay: 0.15s; }
+    .anim.d4 { transition-delay: 0.2s; }
+    .anim.d5 { transition-delay: 0.25s; }
+    .anim.d6 { transition-delay: 0.3s; }
+    .anim.d7 { transition-delay: 0.35s; }
+    .anim.d8 { transition-delay: 0.4s; }
+
+    /* Filter buttons */
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 40px;
+    }
+
+    .filter-btn {
+      padding: 8px 22px;
+      border-radius: 20px;
+      border: 1px solid rgba(96, 165, 250, 0.3);
+      background: transparent;
+      color: #9ca3af;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.25s ease;
+      letter-spacing: 0.3px;
+    }
+
+    .filter-btn:hover {
+      border-color: #60a5fa;
+      color: #60a5fa;
+      background: rgba(59, 130, 246, 0.08);
+    }
+
+    .filter-btn.active {
+      background: rgba(59, 130, 246, 0.15);
+      border-color: #60a5fa;
+      color: #60a5fa;
+      box-shadow: 0 0 12px rgba(96, 165, 250, 0.2);
+    }
+
     /* Projects Grid */
     .projects-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
       gap: 35px;
-      margin-top: 60px;
+      margin-top: 0;
     }
 
     .project-card {
@@ -219,12 +323,14 @@
       border: 1px solid rgba(148, 163, 184, 0.15);
       padding: 35px;
       border-radius: 14px;
-      transition: all 0.3s ease;
+      transition: all 0.35s ease;
       overflow: hidden;
       position: relative;
       height: 100%;
       display: flex;
       flex-direction: column;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
     }
 
     .project-card::before {
@@ -234,7 +340,7 @@
       left: -100%;
       width: 100%;
       height: 100%;
-      background: rgba(96, 165, 250, 0.08);
+      background: rgba(96, 165, 250, 0.06);
       transition: left 0.3s ease;
       z-index: 0;
     }
@@ -251,7 +357,11 @@
     .project-card:hover {
       transform: translateY(-12px);
       border-color: rgba(96, 165, 250, 0.4);
-      box-shadow: 0 20px 40px rgba(96, 165, 250, 0.15);
+      box-shadow: 0 20px 40px rgba(96, 165, 250, 0.15), 0 0 0 1px rgba(96, 165, 250, 0.1);
+    }
+
+    .project-card.hidden {
+      display: none;
     }
 
     .project-card h3 {
@@ -312,11 +422,25 @@
 
     /* Featured Project */
     .featured-section {
-      background: linear-gradient(135deg, rgba(30, 144, 255, 0.12), rgba(59, 130, 246, 0.08));
-      border: 2px solid rgba(96, 165, 250, 0.3);
+      background: linear-gradient(135deg, rgba(30, 144, 255, 0.1), rgba(59, 130, 246, 0.06));
+      border: 1px solid rgba(96, 165, 250, 0.25);
       padding: 60px;
-      border-radius: 16px;
-      margin-bottom: 70px;
+      border-radius: 20px;
+      margin-bottom: 50px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .featured-section::before {
+      content: '';
+      position: absolute;
+      top: -1px;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #3b82f6, transparent);
     }
 
     .featured-section h3 {
@@ -353,18 +477,20 @@
     }
 
     .metric {
-      background: rgba(59, 130, 246, 0.1);
-      border: 1px solid rgba(96, 165, 250, 0.3);
+      background: rgba(59, 130, 246, 0.08);
+      border: 1px solid rgba(96, 165, 250, 0.25);
       padding: 30px 25px;
-      border-radius: 12px;
+      border-radius: 16px;
       text-align: center;
       transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
     }
 
     .metric:hover {
-      background: rgba(59, 130, 246, 0.18);
+      background: rgba(59, 130, 246, 0.16);
       transform: translateY(-8px);
       border-color: rgba(96, 165, 250, 0.5);
+      box-shadow: 0 12px 30px rgba(96, 165, 250, 0.15);
     }
 
     .metric-value {
@@ -372,6 +498,7 @@
       font-weight: bold;
       color: #60a5fa;
       margin-bottom: 10px;
+      font-variant-numeric: tabular-nums;
     }
 
     .metric-label {
@@ -391,12 +518,15 @@
       margin-bottom: 30px;
       border-left: 4px solid #3b82f6;
       transition: all 0.3s ease;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
     }
 
     .research-item:hover {
       transform: translateX(8px);
       border-left-color: #60a5fa;
       background: rgba(30, 41, 59, 0.7);
+      box-shadow: -4px 0 20px rgba(96, 165, 250, 0.12);
     }
 
     .research-item h4 {
@@ -442,11 +572,14 @@
       margin-bottom: 30px;
       border-left: 4px solid #3b82f6;
       transition: all 0.3s ease;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
     }
 
     .experience-item:hover {
       transform: translateX(8px);
       border-left-color: #60a5fa;
+      box-shadow: -4px 0 20px rgba(96, 165, 250, 0.12);
     }
 
     .experience-item h4 {
@@ -489,23 +622,25 @@
     }
 
     .skill-item {
-      background: rgba(59, 130, 246, 0.1);
-      border: 1px solid rgba(96, 165, 250, 0.3);
+      background: rgba(59, 130, 246, 0.08);
+      border: 1px solid rgba(96, 165, 250, 0.25);
       padding: 22px;
-      border-radius: 12px;
+      border-radius: 14px;
       text-align: center;
       color: #60a5fa;
       transition: all 0.3s ease;
-      cursor: pointer;
+      cursor: default;
       font-weight: 600;
-      font-size: 15px;
+      font-size: 14px;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
     }
 
     .skill-item:hover {
-      background: rgba(96, 165, 250, 0.2);
+      background: rgba(96, 165, 250, 0.16);
       transform: translateY(-8px);
       border-color: rgba(96, 165, 250, 0.5);
-      box-shadow: 0 15px 35px rgba(96, 165, 250, 0.2);
+      box-shadow: 0 15px 35px rgba(96, 165, 250, 0.15);
     }
 
     /* Footer */
@@ -513,7 +648,9 @@
       text-align: center;
       padding: 80px 40px;
       color: #6b7280;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      position: relative;
+      z-index: 2;
     }
 
     .footer-links {
@@ -544,32 +681,18 @@
 
     /* Animations */
     @keyframes fadeInDown {
-      from {
-        opacity: 0;
-        transform: translateY(-30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(-30px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
     @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
     /* Mobile */
     @media (max-width: 768px) {
-      nav {
-        padding: 0 20px;
-      }
+      nav { padding: 0 20px; }
 
       .nav-links {
         display: none;
@@ -579,43 +702,20 @@
         width: 100%;
         background: rgba(10, 14, 39, 0.98);
         flex-direction: column;
-        gap: 0;
-        padding: 20px;
         gap: 20px;
+        padding: 20px;
       }
 
-      .nav-links.active {
-        display: flex;
-      }
+      .nav-links.active { display: flex; }
+      .hamburger { display: flex; }
 
-      .hamburger {
-        display: flex;
-      }
+      #hero { padding: 140px 20px 80px; min-height: auto; }
+      #hero h1 { font-size: 44px; }
+      #hero .subtitle { font-size: 20px; }
 
-      #hero {
-        padding: 140px 20px 80px;
-        min-height: auto;
-      }
-
-      #hero h1 {
-        font-size: 44px;
-      }
-
-      #hero .subtitle {
-        font-size: 20px;
-      }
-
-      .section-title {
-        font-size: 36px;
-      }
-
-      section {
-        padding: 80px 20px;
-      }
-
-      .featured-section {
-        padding: 35px 25px;
-      }
+      .section-title { font-size: 36px; }
+      section { padding: 80px 20px; }
+      .featured-section { padding: 35px 25px; }
 
       .projects-grid {
         grid-template-columns: 1fr;
@@ -631,31 +731,28 @@
         grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
       }
 
-      .cta-buttons {
-        flex-direction: column;
-      }
+      .cta-buttons { flex-direction: column; }
+      .cta-btn { width: 100%; }
+      .footer-links { gap: 20px; }
 
-      .cta-btn {
-        width: 100%;
-      }
-
-      .footer-links {
-        gap: 20px;
-      }
+      .cursor-glow { display: none; }
     }
   </style>
 </head>
 <body>
 
+<canvas id="canvas-bg"></canvas>
+<div class="cursor-glow" id="cursorGlow"></div>
+
 <!-- Navigation -->
 <nav>
   <a href="#" class="nav-brand">Nikhil Ahlawat</a>
   <ul class="nav-links" id="navLinks">
-    <li><a href="#hero" onclick="setActive(this)">Home</a></li>
-    <li><a href="#projects" onclick="setActive(this)">Projects</a></li>
-    <li><a href="#research" onclick="setActive(this)">Research</a></li>
-    <li><a href="#experience" onclick="setActive(this)">Experience</a></li>
-    <li><a href="#skills" onclick="setActive(this)">Skills</a></li>
+    <li><a href="#hero">Home</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#research">Research</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#skills">Skills</a></li>
   </ul>
   <div class="hamburger" id="hamburger">
     <span></span>
@@ -667,10 +764,13 @@
 <!-- Hero Section -->
 <section id="hero">
   <h1>Nikhil Ahlawat</h1>
-  <p class="subtitle">Machine Learning Engineer</p>
+  <p class="subtitle"><span id="typed-text"></span><span class="typing-cursor">|</span></p>
   <p class="about-intro">
-    Data professional with experience delivering production-grade ML systems on GCP across the full lifecycle, data ingestion, feature engineering, training, deployment, monitoring, and backfills. Currently in Sky’s Content Data Science team building churn, Next Best Action decisioning, and viewing segmentation for HBO and Sky Sports to improve retention and personalisation. Strong software-engineering and MLOps foundation, complemented by published research in energy systems and responsible AI. Known for translating business problems into scalable, reliable, and explainable ML solutions through close collaboration with data science, engineering, and product stakeholders. 
-    
+      Highly analytical professional building production-grade machine learning systems and MLOps pipelines in large-scale enterprise environments.
+      I specialize in scalable architecture, cross-functional collaboration, and translating complex problems into measurable impact.
+      Currently at Sky, shipping ML systems that power product recommendations and decisioning at scale.
+      Published researcher with peer-reviewed work in applied machine learning and data-driven analysis.
+      Thrive in Agile environments solving complex problems through data, rigorous engineering, and deep technical collaboration with Data Science, Analytics, and MLOps teams.
   </p>
   <div class="cta-buttons">
     <a href="#projects" class="cta-btn cta-btn-primary">View My Work</a>
@@ -680,13 +780,22 @@
 
 <!-- Projects Section -->
 <section id="projects">
-  <h2 class="section-title">Featured & Projects</h2>
+  <h2 class="section-title anim">Featured & Projects</h2>
+
+  <!-- Filter bar -->
+  <div class="filter-bar anim d1">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="llm">LLM / AI</button>
+    <button class="filter-btn" data-filter="ml">Machine Learning</button>
+    <button class="filter-btn" data-filter="data">Data Engineering</button>
+    <button class="filter-btn" data-filter="python">Python</button>
+  </div>
 
   <!-- Production-RAG Featured -->
-  <div class="featured-section">
+  <div class="featured-section anim d2" data-tags="llm ml python rag">
     <h3>Production-Grade Retrieval Platform</h3>
     <p>
-      A hybrid search system combining BM25 keyword matching, semantic embeddings, and cross-encoder reranking. 
+      A hybrid search system combining BM25 keyword matching, semantic embeddings, and cross-encoder reranking.
       Processes 1,000+ documents incrementally with full transparency through detailed score breakdowns.
     </p>
     <ul>
@@ -699,20 +808,20 @@
     </ul>
 
     <div class="metrics">
-      <div class="metric">
-        <div class="metric-value">95%</div>
+      <div class="metric anim d2">
+        <div class="metric-value" data-target="95" data-suffix="%">95%</div>
         <div class="metric-label">Precision@5</div>
       </div>
-      <div class="metric">
-        <div class="metric-value">100%</div>
+      <div class="metric anim d3">
+        <div class="metric-value" data-target="100" data-suffix="%">100%</div>
         <div class="metric-label">Recall@5</div>
       </div>
-      <div class="metric">
-        <div class="metric-value">0.946</div>
+      <div class="metric anim d4">
+        <div class="metric-value" data-target="0.946" data-suffix="" data-decimals="3">0.946</div>
         <div class="metric-label">NDCG@5</div>
       </div>
-      <div class="metric">
-        <div class="metric-value">180ms</div>
+      <div class="metric anim d5">
+        <div class="metric-value" data-target="180" data-suffix="ms">180ms</div>
         <div class="metric-label">P95 Latency</div>
       </div>
     </div>
@@ -733,11 +842,11 @@
 
   <!-- All Projects Grid -->
   <div class="projects-grid">
-    <div class="project-card">
+    <div class="project-card anim d1" data-tags="llm python ai">
       <h3>SmartInvest</h3>
       <p class="project-meta">LLM + RAG Platform</p>
       <p>
-        End-to-end financial intelligence platform combining UK stock data with LLM reasoning and retrieval. 
+        End-to-end financial intelligence platform combining UK stock data with LLM reasoning and retrieval.
         Generates stock insights in plain English and provides investment recommendations.
       </p>
       <div class="project-tags">
@@ -750,11 +859,11 @@
       </a>
     </div>
 
-    <div class="project-card">
+    <div class="project-card anim d2" data-tags="ml python data">
       <h3>LSE Stock Prediction</h3>
       <p class="project-meta">ML Dashboard</p>
       <p>
-        Interactive Streamlit dashboard predicting FTSE 100 stock prices using ensemble ML models. 
+        Interactive Streamlit dashboard predicting FTSE 100 stock prices using ensemble ML models.
         Features real-time data ingestion, model comparison, and performance metrics visualization.
       </p>
       <div class="project-tags">
@@ -767,11 +876,11 @@
       </a>
     </div>
 
-    <div class="project-card">
+    <div class="project-card anim d3" data-tags="data python">
       <h3>London Weather Pipeline</h3>
       <p class="project-meta">Data Pipeline</p>
       <p>
-        Production weather data pipeline fetching real-time OpenWeather data and serving through REST API. 
+        Production weather data pipeline fetching real-time OpenWeather data and serving through REST API.
         Includes data validation, error handling, and PostgreSQL persistence.
       </p>
       <div class="project-tags">
@@ -784,11 +893,11 @@
       </a>
     </div>
 
-    <div class="project-card">
+    <div class="project-card anim d4" data-tags="data python ml">
       <h3>COVID-19 Analysis</h3>
       <p class="project-meta">Data Visualization</p>
       <p>
-        Comprehensive COVID-19 data analysis with interactive visualizations. 
+        Comprehensive COVID-19 data analysis with interactive visualizations.
         Shows regional trends, mortality rates, and comparative epidemiological insights.
       </p>
       <div class="project-tags">
@@ -801,11 +910,11 @@
       </a>
     </div>
 
-    <div class="project-card">
+    <div class="project-card anim d5" data-tags="ml python">
       <h3>Customer Segmentation</h3>
       <p class="project-meta">ML & Market Analysis</p>
       <p>
-        Machine learning project for customer segmentation and market analysis. 
+        Machine learning project for customer segmentation and market analysis.
         Applies clustering algorithms to identify patterns and optimize targeting strategies.
       </p>
       <div class="project-tags">
@@ -818,11 +927,11 @@
       </a>
     </div>
 
-    <div class="project-card">
+    <div class="project-card anim d6" data-tags="python">
       <h3>To-Do List App</h3>
       <p class="project-meta">Task Management</p>
       <p>
-        Full-featured task management application with priority levels, completion tracking, 
+        Full-featured task management application with priority levels, completion tracking,
         and JSON-based persistence. Demonstrates clean architecture and user-friendly CLI design.
       </p>
       <div class="project-tags">
@@ -839,14 +948,14 @@
 
 <!-- Research Section -->
 <section id="research">
-  <h2 class="section-title">Research & Publications</h2>
+  <h2 class="section-title anim">Research & Publications</h2>
 
-  <div class="research-item">
+  <div class="research-item anim d1">
     <h4>Lithium-Ion Battery State of Health Estimation</h4>
     <p class="research-publication">Published in Renewable Energy & Sustainability Review</p>
     <p>
-      Developed comprehensive ML benchmarking framework comparing XGBoost, Random Forest, and SVM 
-      for battery health prediction using NASA datasets. Demonstrated impact of hyperparameter tuning 
+      Developed comprehensive ML benchmarking framework comparing XGBoost, Random Forest, and SVM
+      for battery health prediction using NASA datasets. Demonstrated impact of hyperparameter tuning
       on model performance with rigorous evaluation methodology.
     </p>
     <a href="https://www.sciencedirect.com/science/article/pii/S2950264025000784" target="_blank">
@@ -854,12 +963,12 @@
     </a>
   </div>
 
-  <div class="research-item">
+  <div class="research-item anim d2">
     <h4>Hydrogen Adoption in the UK: A Data-Driven Analysis</h4>
     <p class="research-publication">Published in Environmental Science & Ecology Journal</p>
     <p>
-      Analyzed UK survey data using statistical modeling and NLP techniques to understand public perception 
-      of hydrogen energy adoption. Identified key barriers and drivers for renewable energy transition 
+      Analyzed UK survey data using statistical modeling and NLP techniques to understand public perception
+      of hydrogen energy adoption. Identified key barriers and drivers for renewable energy transition
       through data-driven insights.
     </p>
     <a href="https://scijournals.onlinelibrary.wiley.com/doi/full/10.1002/ese3.70321" target="_blank">
@@ -867,7 +976,7 @@
     </a>
   </div>
 
-  <div style="text-align: center; margin-top: 40px; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.1);">
+  <div style="text-align: center; margin-top: 40px; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.1);" class="anim d3">
     <p style="color: #9ca3af; margin-bottom: 15px;">Full research profile</p>
     <a href="https://scholar.google.co.uk/citations?hl=en&user=J2PM-PsAAAAJ" target="_blank" class="project-link" style="font-size: 16px;">
       View Google Scholar →
@@ -877,9 +986,9 @@
 
 <!-- Experience Section -->
 <section id="experience">
-  <h2 class="section-title">Experience</h2>
+  <h2 class="section-title anim">Experience</h2>
 
-  <div class="experience-item">
+  <div class="experience-item anim d1">
     <h4>Machine Learning Engineer</h4>
     <p class="experience-meta">Sky • Currently</p>
     <ul>
@@ -891,7 +1000,7 @@
     </ul>
   </div>
 
-  <div class="experience-item">
+  <div class="experience-item anim d2">
     <h4>Researcher, Data Science & Machine Learning</h4>
     <p class="experience-meta">Cranfield University • Sep 2023 - Sep 2025 (2 yrs 1 mo)</p>
     <ul>
@@ -904,7 +1013,7 @@
     </ul>
   </div>
 
-  <div class="experience-item">
+  <div class="experience-item anim d3">
     <h4>Trainee, Banking Operations</h4>
     <p class="experience-meta">IndusInd Bank • Jan 2022 - Jun 2022 (6 mos)</p>
     <ul>
@@ -920,26 +1029,26 @@
 
 <!-- Skills Section -->
 <section id="skills">
-  <h2 class="section-title">Technical Skills</h2>
+  <h2 class="section-title anim">Technical Skills</h2>
   <div class="skills-grid">
-    <div class="skill-item">Python</div>
-    <div class="skill-item">Machine Learning</div>
-    <div class="skill-item">RAG Systems</div>
-    <div class="skill-item">LLMs & Agents</div>
-    <div class="skill-item">FastAPI</div>
-    <div class="skill-item">GCP Vertex AI</div>
-    <div class="skill-item">BigQuery</div>
-    <div class="skill-item">ChromaDB</div>
-    <div class="skill-item">Docker</div>
-    <div class="skill-item">Kubernetes</div>
-    <div class="skill-item">LangGraph</div>
-    <div class="skill-item">LangChain</div>
-    <div class="skill-item">SQL</div>
-    <div class="skill-item">Streamlit</div>
-    <div class="skill-item">Pandas & NumPy</div>
-    <div class="skill-item">Scikit-Learn</div>
-    <div class="skill-item">MLOps</div>
-    <div class="skill-item">Data Pipelines</div>
+    <div class="skill-item anim d1">Python</div>
+    <div class="skill-item anim d1">Machine Learning</div>
+    <div class="skill-item anim d2">RAG Systems</div>
+    <div class="skill-item anim d2">LLMs & Agents</div>
+    <div class="skill-item anim d3">FastAPI</div>
+    <div class="skill-item anim d3">GCP Vertex AI</div>
+    <div class="skill-item anim d4">BigQuery</div>
+    <div class="skill-item anim d4">ChromaDB</div>
+    <div class="skill-item anim d5">Docker</div>
+    <div class="skill-item anim d5">Kubernetes</div>
+    <div class="skill-item anim d6">LangGraph</div>
+    <div class="skill-item anim d6">LangChain</div>
+    <div class="skill-item anim d7">SQL</div>
+    <div class="skill-item anim d7">Streamlit</div>
+    <div class="skill-item anim d8">Pandas & NumPy</div>
+    <div class="skill-item anim d8">Scikit-Learn</div>
+    <div class="skill-item anim d1">MLOps</div>
+    <div class="skill-item anim d2">Data Pipelines</div>
   </div>
 </section>
 
@@ -955,49 +1064,202 @@
 </footer>
 
 <script>
-  // Mobile menu toggle
-  const hamburger = document.getElementById('hamburger');
-  const navLinks = document.getElementById('navLinks');
+  /* ── Neural-network canvas background ── */
+  const canvas = document.getElementById('canvas-bg');
+  const ctx = canvas.getContext('2d');
+  const PARTICLE_COUNT = 70;
+  const MAX_DIST = 160;
+  let particles = [];
 
-  hamburger.addEventListener('click', () => {
-    navLinks.classList.toggle('active');
-  });
-
-  // Close menu when clicking a link
-  document.querySelectorAll('.nav-links a').forEach(link => {
-    link.addEventListener('click', () => {
-      navLinks.classList.remove('active');
-    });
-  });
-
-  // Set active nav link
-  function setActive(element) {
-    document.querySelectorAll('.nav-links a').forEach(link => {
-      link.classList.remove('active');
-    });
-    element.classList.add('active');
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
   }
 
-  // Update active link on scroll
+  class Particle {
+    constructor() { this.reset(true); }
+    reset(randomY) {
+      this.x = Math.random() * canvas.width;
+      this.y = randomY ? Math.random() * canvas.height : -10;
+      this.vx = (Math.random() - 0.5) * 0.4;
+      this.vy = (Math.random() - 0.5) * 0.4;
+      this.r = Math.random() * 1.5 + 0.5;
+      this.opacity = Math.random() * 0.5 + 0.3;
+    }
+    update() {
+      this.x += this.vx;
+      this.y += this.vy;
+      if (this.x < 0 || this.x > canvas.width)  this.vx *= -1;
+      if (this.y < 0 || this.y > canvas.height)  this.vy *= -1;
+    }
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(96, 165, 250, ${this.opacity})`;
+      ctx.fill();
+    }
+  }
+
+  function drawFrame() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => { p.update(); p.draw(); });
+
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < MAX_DIST) {
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = `rgba(96, 165, 250, ${0.12 * (1 - dist / MAX_DIST)})`;
+          ctx.lineWidth = 0.8;
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(drawFrame);
+  }
+
+  resizeCanvas();
+  for (let i = 0; i < PARTICLE_COUNT; i++) particles.push(new Particle());
+  drawFrame();
+
+  window.addEventListener('resize', () => {
+    resizeCanvas();
+    particles.forEach(p => p.reset(true));
+  });
+
+  /* ── Cursor glow ── */
+  const glow = document.getElementById('cursorGlow');
+  document.addEventListener('mousemove', e => {
+    glow.style.left = e.clientX + 'px';
+    glow.style.top  = e.clientY + 'px';
+  });
+
+  /* ── Typewriter ── */
+  const titles = [
+    'Machine Learning Engineer',
+    'MLOps Specialist',
+    'AI Systems Builder',
+    'Production ML Engineer'
+  ];
+  const typedEl = document.getElementById('typed-text');
+  let tIdx = 0, cIdx = 0, deleting = false;
+
+  function typeStep() {
+    const current = titles[tIdx];
+    if (deleting) {
+      typedEl.textContent = current.slice(0, --cIdx);
+    } else {
+      typedEl.textContent = current.slice(0, ++cIdx);
+    }
+
+    if (!deleting && cIdx === current.length) {
+      setTimeout(() => { deleting = true; typeStep(); }, 2200);
+      return;
+    }
+    if (deleting && cIdx === 0) {
+      deleting = false;
+      tIdx = (tIdx + 1) % titles.length;
+    }
+    setTimeout(typeStep, deleting ? 45 : 80);
+  }
+  setTimeout(typeStep, 600);
+
+  /* ── Scroll animations (IntersectionObserver) ── */
+  const animObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        animObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.anim').forEach(el => animObserver.observe(el));
+
+  /* ── Animated counters ── */
+  const counterObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        animateCounter(entry.target);
+        counterObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.6 });
+
+  document.querySelectorAll('.metric-value[data-target]').forEach(el => counterObserver.observe(el));
+
+  function animateCounter(el) {
+    const target   = parseFloat(el.dataset.target);
+    const suffix   = el.dataset.suffix || '';
+    const decimals = parseInt(el.dataset.decimals || '0', 10);
+    const duration = 1400;
+    const startTs  = performance.now();
+
+    function step(now) {
+      const p = Math.min((now - startTs) / duration, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      const val = target * eased;
+      el.textContent = decimals > 0 ? val.toFixed(decimals) + suffix : Math.round(val) + suffix;
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  /* ── Project tag filter ── */
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const allCards   = document.querySelectorAll('.project-card[data-tags], .featured-section[data-tags]');
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const filter = btn.dataset.filter;
+
+      allCards.forEach(card => {
+        const tags = (card.dataset.tags || '').toLowerCase();
+        const show = filter === 'all' || tags.includes(filter);
+
+        if (show) {
+          card.style.display = '';
+          requestAnimationFrame(() => {
+            card.style.opacity = '1';
+            card.style.transform = '';
+          });
+        } else {
+          card.style.opacity = '0';
+          card.style.transform = 'scale(0.95)';
+          setTimeout(() => { if (!((card.dataset.tags || '').includes(btn.dataset.filter)) ) card.style.display = 'none'; }, 280);
+        }
+      });
+    });
+  });
+
+  /* ── Mobile nav ── */
+  const hamburger = document.getElementById('hamburger');
+  const navLinks  = document.getElementById('navLinks');
+
+  hamburger.addEventListener('click', () => navLinks.classList.toggle('active'));
+  document.querySelectorAll('.nav-links a').forEach(link => {
+    link.addEventListener('click', () => navLinks.classList.remove('active'));
+  });
+
+  /* ── Active nav on scroll ── */
   window.addEventListener('scroll', () => {
     const sections = ['hero', 'projects', 'research', 'experience', 'skills'];
     let current = 'hero';
-
-    sections.forEach(section => {
-      const element = document.getElementById(section);
-      if (element && element.offsetTop <= window.scrollY + 200) {
-        current = section;
-      }
+    sections.forEach(id => {
+      const el = document.getElementById(id);
+      if (el && el.offsetTop <= window.scrollY + 200) current = id;
     });
-
     document.querySelectorAll('.nav-links a').forEach(link => {
-      link.classList.remove('active');
-      if (link.getAttribute('href') === `#${current}`) {
-        link.classList.add('active');
-      }
+      link.classList.toggle('active', link.getAttribute('href') === `#${current}`);
     });
   });
 </script>
-
 </body>
 </html>
